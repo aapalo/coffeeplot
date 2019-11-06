@@ -16,6 +16,10 @@ def openfile():
     i = 0
     times = [] #time
     cups = [] #cups
+    #return data after a certain time
+    idx = 0
+    datastart = datetime.strptime("2019-10-28 00:00:01", "%Y-%m-%d %H:%M:%S")
+
     for line in data:
         line = (line.decode('utf-8').strip("\n").split(" "))
         time = int(line[0])
@@ -23,8 +27,11 @@ def openfile():
         time = datetime.fromtimestamp(time)
         times.append(time)
         cups.append(cup)
+        if idx == 0:
+            if time > datastart:
+                idx = i
         i += 1
-    return [times,cups]
+    return [times[idx:],cups[idx:]]
 
 # coffee is brewing if cups increasing for more than 20 measurements
 # coffee is ready when it is brewed and then cups decreases
@@ -62,7 +69,7 @@ def listbrewing(times, cups):
         plt.clf()
         plt.plot(brewtimes,brewcups,"rx")#,"gx")
         bottom, top = plt.ylim()
-        plt.ylim(0, 10)
+        plt.ylim(0, top)
         #plt.xlabel("Aika")
         plt.ylabel("Kuppeja")
         plt.grid(which='major')
@@ -70,8 +77,7 @@ def listbrewing(times, cups):
         plt.tight_layout()
         plt.savefig("pannut.png")
         #plotcombined(times, cups)
-        #plt.show()
-    #print(brewcups)
+
     return [brewtimes, brewcups]
 
 #plot how many pots (and cups) brewed per day
@@ -81,7 +87,7 @@ def plotPotsPerDay(brewtimes, brewcups):
     cups = {}
     pots = {}
     startdate = brewtimes[0].date()
-    maxcups = max(brewcups)
+    maxcups = 10 #max(brewcups)
     for i in range(len(brewtimes)):
         d = brewtimes[i].date()
         if d not in cups.keys():
@@ -112,6 +118,7 @@ def plotPotsPerWeekday(datelist, cuplist, potlist):
     weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday",\
                "Saturday", "Sunday"]
     weekdaysFi = ["Ma", "Ti", "Ke", "To", "Pe", "La", "Su"]
+    weekdaysEn = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
     wd = {}
     for d in weekdays:
         wd[d] = 0
@@ -123,7 +130,7 @@ def plotPotsPerWeekday(datelist, cuplist, potlist):
         plotlist.append(wd[d])
     plt.cla()
     plt.clf()
-    plt.bar(weekdaysFi, plotlist)
+    plt.bar(weekdaysEn, plotlist)
     plt.tight_layout()
     plt.savefig("pannutpervkpva.png")
     return 0
@@ -131,7 +138,7 @@ def plotPotsPerWeekday(datelist, cuplist, potlist):
 def plotPotsPerHour(brewtime, brewcups):
     hlist = range(0,24)
     hd = {}
-    maxcups = max(brewcups)
+    maxcups = 10#max(brewcups)
     for h in hlist:
         hd[h] = 0
     for i in range(len(brewtime)):
@@ -158,7 +165,7 @@ def plotcombined(times, cups):
     plt.xlabel("Aika")
     plt.ylabel("Kuppeja")
     plt.savefig("kuva.png")
-    plt.show()
+    #plt.show()
     return 0
 
 #plot last 24h or 3d
