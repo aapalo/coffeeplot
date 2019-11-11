@@ -74,6 +74,7 @@ def listbrewing(times, cups):
         plt.ylabel("Kuppeja")
         plt.grid(which='major')
         plt.xticks(rotation=15)
+        plt.title("Uudet pannut")
         plt.tight_layout()
         plt.savefig("pannut.png")
         #plotcombined(times, cups)
@@ -107,7 +108,7 @@ def plotPotsPerDay(brewtimes, brewcups):
     plt.clf()
     plt.plot(datelist, cuplist, ".")
     plt.plot(datelist, potlist, ".")
-    plt.legend(["Pannullisia","Pannuja"])
+    plt.legend(["Kuppeja","Pannuja"])
     plt.grid(which='major')
     plt.xticks(rotation=10)
     plt.tight_layout()
@@ -130,7 +131,8 @@ def plotPotsPerWeekday(datelist, cuplist, potlist):
         plotlist.append(wd[d])
     plt.cla()
     plt.clf()
-    plt.bar(weekdaysEn, plotlist)
+    plt.bar(weekdaysFi, plotlist)
+    plt.title("Pannullista per viikonpäivä")
     plt.tight_layout()
     plt.savefig("pannutpervkpva.png")
     return 0
@@ -168,7 +170,7 @@ def plotcombined(times, cups):
     #plt.show()
     return 0
 
-#plot last 24h or 3d
+#plot the last 24h or 3d
 def plotTimeperiod(times, cups, period):
     time = datetime.now()
     if period == "24h":
@@ -197,12 +199,16 @@ def plotTimeperiod(times, cups, period):
     #plt.show()
     return 0
 
-[t, c] = openfile()
-#plotcombined(t, c)
-[bt, bc] = listbrewing(t, c)
-[dl, cl, pl] = plotPotsPerDay(bt, bc)
-plotPotsPerWeekday(dl, cl, pl)
-plotPotsPerHour(bt, bc)
-plotTimeperiod(t, c, "24h")
-plotTimeperiod(t, c, "3d")
+def main():
+    [t, c] = openfile()
+    now = datetime.now()
+    [bt, bc] = listbrewing(t, c)
+    [dl, cl, pl] = plotPotsPerDay(bt, bc)
+    plotPotsPerHour(bt, bc)
+    plotTimeperiod(t, c, "24h")
+    plotTimeperiod(t, c, "3d")
+    if now.strftime("%A") == "Sunday":
+        plotPotsPerWeekday(dl, cl, pl)
+    return 0
 
+main()
