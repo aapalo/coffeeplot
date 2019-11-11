@@ -132,7 +132,7 @@ def plotPotsPerWeekday(datelist, cuplist, potlist):
     plt.cla()
     plt.clf()
     plt.bar(weekdaysFi, plotlist)
-    plt.title("Pannullista per viikonpäivä")
+    plt.title("Pannullista per viikonpaiva")
     plt.tight_layout()
     plt.savefig("pannutpervkpva.png")
     return 0
